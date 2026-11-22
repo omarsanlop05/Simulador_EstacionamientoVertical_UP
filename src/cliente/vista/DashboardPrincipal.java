@@ -1,9 +1,9 @@
 package cliente.vista;
 
 import cliente.ClienteMaestroTCP;
+import cliente.RecursosPiso;
 import cliente.agentes.*;
 import modelo.*;
-import servidor.ServidorMaestroTCP;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,9 +13,9 @@ import java.util.List;
 
 public class DashboardPrincipal extends JFrame {
     private final ConfiguracionSimulador cfg;
-    private final GestorRecursos recursos;
+    private final RecursosPiso recursos;
+    private final ClienteMaestroTCP clienteTCP;
     private final List<AgenteBase> todosLosAgentes = new ArrayList<>();
-    private ServidorMaestroTCP servidorMaestro;
 
     // Labels Rubro C (Estados de Threads)
     private JLabel lblRunnable, lblTimedWaiting, lblWaiting, lblBlocked, lblTerminated;
@@ -28,9 +28,10 @@ public class DashboardPrincipal extends JFrame {
 
     public DashboardPrincipal(ConfiguracionSimulador cfg) {
         this.cfg = cfg;
-        this.recursos = new GestorRecursos(cfg);
+        this.recursos = new RecursosPiso(cfg);
+        this.clienteTCP = new ClienteMaestroTCP(cfg.hostMaestro, cfg.puertoMaestro);
 
-        setTitle("Tablero General - Simulador Estacionamiento Vertical UP");
+        setTitle("Tablero del Piso - Simulador Estacionamiento Vertical UP");
         setSize(1100, 720);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -95,11 +96,14 @@ public class DashboardPrincipal extends JFrame {
     }
 
     private void iniciarAgentes() {
-        // 1. Iniciar Sistema Maestro (Servidor TCP que escucha a los pisos)
-        servidorMaestro = new ServidorMaestroTCP("Maestro-TCP", cfg.puertoMaestro, recursos, cfg);
-        registrarYArrancar(servidorMaestro);
-
-        ClienteMaestroTCP clienteTCP = new ClienteMaestroTCP(cfg.hostMaestro, cfg.puertoMaestro);
+        // 1. Registrar este piso en el sistema maestro (reintenta hasta conectar)
+        try {
+            clienteTCP.conectar(cfg.mCubiculosAuto);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+        setTitle("Tablero del Piso-" + clienteTCP.getIdPiso() + " - Simulador Estacionamiento Vertical UP");
 
         // 2. Iniciar Agentes Auto
         for (int i = 1; i <= cfg.numAutos; i++) {
@@ -108,12 +112,12 @@ public class DashboardPrincipal extends JFrame {
 
         // 3. Iniciar Agentes Peatón (Interactúan con Autos en el Cruce X)
         for (int i = 1; i <= cfg.numPeatones; i++) {
-            registrarYArrancar(new AgentePeaton("Peatón-" + i, recursos, cfg));
+            registrarYArrancar(new AgentePeaton("Peatón-" + i, recursos, cfg, clienteTCP));
         }
 
         // 4. Iniciar Agentes Guardia (Interactúan con Autos compitiendo por Ap y Cu)
         for (int i = 1; i <= cfg.numGuardias; i++) {
-            registrarYArrancar(new AgenteGuardia("Guardia-" + i, recursos, cfg));
+            registrarYArrancar(new AgenteGuardia("Guardia-" + i, recursos, cfg, clienteTCP));
         }
     }
 
@@ -162,23 +166,23 @@ public class DashboardPrincipal extends JFrame {
         sb.append(String.format("• Agente Peatón: hay %d agentes.\n", cfg.numPeatones));
         sb.append(String.format("• Agente Ciclista: hay %d agentes.\n", cfg.numCiclistas));
         sb.append(String.format("• Agente Guardia: hay %d agentes.\n", cfg.numGuardias));
-        sb.append("• Servidor Maestro (TCP): hay 1 nodo escuchando.\n\n");
+        sb.append(String.format("• Conectado al maestro %s:%d como Piso-%d.\n\n",
+                cfg.hostMaestro, cfg.puertoMaestro, clienteTCP.getIdPiso()));
 
-        sb.append("=== BUFFERS m > 1 (ZONAS CRÍTICAS) ===\n");
+        sb.append("=== RECURSOS DEL MAESTRO (REMOTOS, TCP) ===\n");
+        sb.append("  ").append(clienteTCP.estadoMaestro()).append("\n\n");
+
+        sb.append("=== BUFFERS LOCALES m > 1 (ZONAS CRÍTICAS) ===\n");
         sb.append(formatearBuffer(recursos.cuCubiculosAuto));
         sb.append(formatearBuffer(recursos.cbCubiculosBici));
         sb.append(formatearBuffer(recursos.qCallePiso));
         sb.append(formatearBuffer(recursos.ewEsperaElevador));
-        sb.append(formatearBuffer(recursos.ecCabinaElevador));
         sb.append(formatearBuffer(recursos.cnConosGuardia));
         sb.append(String.format("• Hay %d agentes esperando por entrar a Cruce X.\n", recursos.cruceX.getEsperandoTotal()));
         sb.append(String.format("• Hay %d peatones y %d autos dentro de Cruce X.\n\n",
                 recursos.cruceX.getPeatonesCruzando(), recursos.cruceX.getAutosCruzando()));
 
-        sb.append("=== SECCIONES CRÍTICAS (BUFFER 1) ===\n");
-        sb.append(formatearZonaCritica(recursos.cvCasetaEntrada));
-        sb.append(formatearZonaCritica(recursos.csCasetaSalida));
-        sb.append(formatearZonaCritica(recursos.cpCasetaPeatonal));
+        sb.append("=== SECCIONES CRÍTICAS LOCALES (BUFFER 1) ===\n");
         sb.append(formatearZonaCritica(recursos.mzZonaManiobra));
 
         txtResumenGeneral.setText(sb.toString());

@@ -5,14 +5,19 @@ import javax.swing.*;
 import java.awt.*;
 
 public class VentanaConfiguracion extends JFrame {
-    private final ConfiguracionSimulador cfg = new ConfiguracionSimulador();
+    private final ConfiguracionSimulador cfg;
 
     private JSpinner spAutos, spPeatones, spCiclistas, spGuardias;
     private JSpinner spCu, spCb, spQ, spX, spEw, spEc, spCn;
     private JSpinner spTCaseta, spTCirc, spTEstac, spTUniv, spTCono, spTCruce;
 
     public VentanaConfiguracion() {
-        setTitle("Configuración Estacionamiento Vertical UP - Avance 2");
+        this(new ConfiguracionSimulador());
+    }
+
+    public VentanaConfiguracion(ConfiguracionSimulador cfg) {
+        this.cfg = cfg;
+        setTitle("Configuración Piso - Estacionamiento Vertical UP - Avance 3");
         setSize(680, 560);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -108,7 +113,11 @@ public class VentanaConfiguracion extends JFrame {
         new DashboardPrincipal(cfg).setVisible(true);
     }
 
+    // Punto de entrada del cliente (un piso). Uso: [hostMaestro] [puertoMaestro]
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new VentanaConfiguracion().setVisible(true));
+        ConfiguracionSimulador cfg = new ConfiguracionSimulador();
+        if (args.length >= 1) cfg.hostMaestro = args[0];
+        if (args.length >= 2) cfg.puertoMaestro = Integer.parseInt(args[1]);
+        SwingUtilities.invokeLater(() -> new VentanaConfiguracion(cfg).setVisible(true));
     }
 }

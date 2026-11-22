@@ -1,37 +1,39 @@
 package cliente.agentes;
 
+import cliente.ClienteMaestroTCP;
+import cliente.RecursosPiso;
 import modelo.*;
 
-public class AgentePeaton extends AgenteBase {
-    public AgentePeaton(String id, GestorRecursos recursos, ConfiguracionSimulador config) {
-        super(id, "Peatón", recursos, config);
+public class AgentePeaton extends AgentePiso {
+    public AgentePeaton(String id, RecursosPiso recursos, ConfiguracionSimulador config, ClienteMaestroTCP maestro) {
+        super(id, "Peatón", recursos, config, maestro);
     }
 
     @Override
     public void run() {
         try {
-            // 1. Caseta peatonal (Cp -> Cp')
+            // 1. Caseta peatonal (Cp -> Cp'): recurso del maestro
             estadoActual = EstadoBPMN.ESPERANDO_CASETA_PEATONAL;
-            recursos.cpCasetaPeatonal.entrar();
+            maestro.pedir("CP");
             Thread.sleep(config.timerCaseta / 2);
-            recursos.cpCasetaPeatonal.salir();
+            maestro.soltar("CP");
 
-            // 2. Cruzar calle (Xp -> Xp') interactuando con autos en el mismo monitor
+            // 2. Cruzar calle (Xp -> Xp') interactuando con autos en el mismo monitor del piso
             estadoActual = EstadoBPMN.CRUZANDO_CALLE_PEATON;
             recursos.cruceX.entrarPeaton();
             Thread.sleep(config.timerCruce);
             recursos.cruceX.salirPeaton();
 
-            // 3. Zona espera elevador (Ew) y cabina (Ec)
+            // 3. Zona espera elevador (Ew local) y cabina (Ec en el maestro)
             estadoActual = EstadoBPMN.ESPERANDO_ELEVADOR;
             recursos.ewEsperaElevador.entrar();
             Thread.sleep(400);
-            recursos.ecCabinaElevador.entrar();
+            maestro.pedir("EC");
             recursos.ewEsperaElevador.salir(); // Ew'
 
             estadoActual = EstadoBPMN.EN_CABINA_ELEVADOR;
             Thread.sleep(config.timerCirculacion);
-            recursos.ecCabinaElevador.salir(); // Ec'
+            maestro.soltar("EC"); // Ec'
 
             // 4. Permanecer en universidad y regresar
             estadoActual = EstadoBPMN.PERMANECIENDO_UNIVERSIDAD;

@@ -15,6 +15,7 @@ public enum EstadoBPMN {
     SALIENDO_CUBICULO("Saliendo del cubículo"),
     ESPERANDO_CASETA_SALIDA("Esperando caseta salida (Cs)"),
     CRUZANDO_CASETA_SALIDA("Cruzando caseta salida"),
+    ESCUCHANDO_PISOS("Escuchando conexiones de pisos (TCP)"),
     FINALIZADO("Visita finalizada"),
 
     // Estados Peatón

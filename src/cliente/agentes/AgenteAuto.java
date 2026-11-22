@@ -1,32 +1,29 @@
 package cliente.agentes;
 
 import cliente.ClienteMaestroTCP;
+import cliente.RecursosPiso;
 import modelo.*;
 
-public class AgenteAuto extends AgenteBase {
-    private final ClienteMaestroTCP clienteTCP;
-
-    public AgenteAuto(String id, GestorRecursos recursos, ConfiguracionSimulador config, ClienteMaestroTCP clienteTCP) {
-        super(id, "Auto", recursos, config);
-        this.clienteTCP = clienteTCP;
+public class AgenteAuto extends AgentePiso {
+    public AgenteAuto(String id, RecursosPiso recursos, ConfiguracionSimulador config, ClienteMaestroTCP maestro) {
+        super(id, "Auto", recursos, config, maestro);
     }
 
     @Override
     public void run() {
         try {
-            // 1. Caseta entrada (Cv -> Cv')
+            // 1. Caseta entrada (Cv -> Cv'): recurso del maestro
             estadoActual = EstadoBPMN.ESPERANDO_CASETA_ENTRADA;
-            recursos.cvCasetaEntrada.entrar();
+            maestro.pedir("CV");
             estadoActual = EstadoBPMN.CRUZANDO_CASETA_ENTRADA;
             Thread.sleep(config.timerCaseta);
-            recursos.cvCasetaEntrada.salir();
+            maestro.soltar("CV");
 
-            // 2. Consultar admisión al piso remoto vía TCP (Ap)
+            // 2. Consultar admisión del piso al maestro (Ap)
             estadoActual = EstadoBPMN.CONSULTANDO_CUPO_TCP;
-            recursos.semaforoCupoAp.acquire(); // Adquiere cupo Ap
-            clienteTCP.enviarComando("RESERVAR_AP:" + id);
+            maestro.pedir("AP");
 
-            // 3. Entrar a calle Q y pasar cruce peatonal Xv
+            // 3. Entrar a calle Q y pasar cruce peatonal Xv (buffers del piso)
             estadoActual = EstadoBPMN.CIRCULANDO_CALLE;
             recursos.qCallePiso.entrar();
             Thread.sleep(config.timerCirculacion);
@@ -51,22 +48,21 @@ public class AgenteAuto extends AgenteBase {
             estadoActual = EstadoBPMN.PERMANECIENDO_UNIVERSIDAD;
             Thread.sleep(config.timerEstanciaUniversidad / 2);
 
-            // 6. Retiro: tomar Mz y Q, liberar Cu' y Mz', notificar Ap' por TCP
+            // 6. Retiro: tomar Mz y Q, liberar Cu' y Mz', notificar Ap' al maestro
             estadoActual = EstadoBPMN.SALIENDO_CUBICULO;
             recursos.mzZonaManiobra.entrar();
             recursos.qCallePiso.entrar();
             Thread.sleep(config.timerEstacionar);
             recursos.cuCubiculosAuto.salir(); // Cu'
             recursos.mzZonaManiobra.salir();  // Mz'
-            recursos.semaforoCupoAp.release(); // Ap'
-            clienteTCP.enviarComando("LIBERAR_AP:" + id);
+            maestro.soltar("AP");             // Ap'
 
             // 7. Circular hacia caseta de salida Cs -> Cs' -> Q'
             estadoActual = EstadoBPMN.ESPERANDO_CASETA_SALIDA;
-            recursos.csCasetaSalida.entrar();
+            maestro.pedir("CS");
             estadoActual = EstadoBPMN.CRUZANDO_CASETA_SALIDA;
             Thread.sleep(config.timerCaseta);
-            recursos.csCasetaSalida.salir();
+            maestro.soltar("CS");
             recursos.qCallePiso.salir();
 
             estadoActual = EstadoBPMN.FINALIZADO;

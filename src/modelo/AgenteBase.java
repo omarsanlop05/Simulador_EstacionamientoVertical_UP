@@ -3,16 +3,12 @@ package modelo;
 public abstract class AgenteBase implements Runnable {
     protected final String id;
     protected final String tipo;
-    protected final GestorRecursos recursos;
-    protected final ConfiguracionSimulador config;
     protected volatile EstadoBPMN estadoActual = EstadoBPMN.LLEGADA;
     protected Thread hiloPropio;
 
-    public AgenteBase(String id, String tipo, GestorRecursos recursos, ConfiguracionSimulador config) {
+    public AgenteBase(String id, String tipo) {
         this.id = id;
         this.tipo = tipo;
-        this.recursos = recursos;
-        this.config = config;
     }
 
     public void setHiloPropio(Thread t) {

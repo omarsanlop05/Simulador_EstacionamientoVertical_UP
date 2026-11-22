@@ -1,20 +1,22 @@
 package cliente.agentes;
 
+import cliente.ClienteMaestroTCP;
+import cliente.RecursosPiso;
 import modelo.*;
 
-public class AgenteGuardia extends AgenteBase {
-    public AgenteGuardia(String id, GestorRecursos recursos, ConfiguracionSimulador config) {
-        super(id, "Guardia", recursos, config);
+public class AgenteGuardia extends AgentePiso {
+    public AgenteGuardia(String id, RecursosPiso recursos, ConfiguracionSimulador config, ClienteMaestroTCP maestro) {
+        super(id, "Guardia", recursos, config, maestro);
     }
 
     @Override
     public void run() {
         try {
             for (int turno = 0; turno < 2; turno++) {
-                // Toma cono Cn y cupo Ap
+                // Toma cono Cn (local) y consulta cupo Ap al maestro
                 estadoActual = EstadoBPMN.ELIGIENDO_PISO;
                 recursos.cnConosGuardia.entrar();
-                recursos.semaforoCupoAp.acquire();
+                maestro.pedir("AP");
 
                 // Bloquea cubículo Cu
                 estadoActual = EstadoBPMN.COLOCANDO_CONO;
@@ -26,7 +28,7 @@ public class AgenteGuardia extends AgenteBase {
                 // Retira cono: Cu' -> Ap' -> Cn'
                 estadoActual = EstadoBPMN.RETIRANDO_CONO;
                 recursos.cuCubiculosAuto.salir();
-                recursos.semaforoCupoAp.release();
+                maestro.soltar("AP");
                 recursos.cnConosGuardia.salir();
 
                 Thread.sleep(500);

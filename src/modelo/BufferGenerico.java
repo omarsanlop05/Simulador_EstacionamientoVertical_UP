@@ -24,6 +24,15 @@ public class BufferGenerico {
         }
     }
 
+    // Intento sin bloqueo (consulta de cupo remota vía TCP)
+    public synchronized boolean intentarEntrar() {
+        if (ocupados >= capacidadM) {
+            return false;
+        }
+        ocupados++;
+        return true;
+    }
+
     // Operación SACAR (evento naranja con apóstrofe BPMN)
     public synchronized void salir() {
         if (ocupados > 0) {
