@@ -1,8 +1,9 @@
-package vista;
+package cliente.vista;
 
-import agentes.*;
+import cliente.ClienteMaestroTCP;
+import cliente.agentes.*;
 import modelo.*;
-import red.ClienteMaestroTCP;
+import servidor.ServidorMaestroTCP;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,7 +15,7 @@ public class DashboardPrincipal extends JFrame {
     private final ConfiguracionSimulador cfg;
     private final GestorRecursos recursos;
     private final List<AgenteBase> todosLosAgentes = new ArrayList<>();
-    private AgentePisoRemoto pisoRemoto;
+    private ServidorMaestroTCP servidorMaestro;
 
     // Labels Rubro C (Estados de Threads)
     private JLabel lblRunnable, lblTimedWaiting, lblWaiting, lblBlocked, lblTerminated;
@@ -94,11 +95,11 @@ public class DashboardPrincipal extends JFrame {
     }
 
     private void iniciarAgentes() {
-        // 1. Iniciar Agente Distribuido (Servidor TCP Piso Remoto)
-        pisoRemoto = new AgentePisoRemoto("Piso-1-TCP", cfg.puertoPisoRemoto, recursos, cfg);
-        registrarYArrancar(pisoRemoto);
+        // 1. Iniciar Sistema Maestro (Servidor TCP que escucha a los pisos)
+        servidorMaestro = new ServidorMaestroTCP("Maestro-TCP", cfg.puertoMaestro, recursos, cfg);
+        registrarYArrancar(servidorMaestro);
 
-        ClienteMaestroTCP clienteTCP = new ClienteMaestroTCP(cfg.hostPisoRemoto, cfg.puertoPisoRemoto);
+        ClienteMaestroTCP clienteTCP = new ClienteMaestroTCP(cfg.hostMaestro, cfg.puertoMaestro);
 
         // 2. Iniciar Agentes Auto
         for (int i = 1; i <= cfg.numAutos; i++) {
@@ -161,7 +162,7 @@ public class DashboardPrincipal extends JFrame {
         sb.append(String.format("• Agente Peatón: hay %d agentes.\n", cfg.numPeatones));
         sb.append(String.format("• Agente Ciclista: hay %d agentes.\n", cfg.numCiclistas));
         sb.append(String.format("• Agente Guardia: hay %d agentes.\n", cfg.numGuardias));
-        sb.append("• Agente Piso Remoto (TCP): hay 1 nodo servidor.\n\n");
+        sb.append("• Servidor Maestro (TCP): hay 1 nodo escuchando.\n\n");
 
         sb.append("=== BUFFERS m > 1 (ZONAS CRÍTICAS) ===\n");
         sb.append(formatearBuffer(recursos.cuCubiculosAuto));

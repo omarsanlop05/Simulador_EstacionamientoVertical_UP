@@ -1,16 +1,18 @@
-package agentes;
+package servidor;
 
 import modelo.*;
 import java.io.*;
 import java.net.*;
 
-public class AgentePisoRemoto extends AgenteBase {
+// Sistema maestro: escucha conexiones TCP de los pisos (clientes) y
+// administra el cupo global de admisión (Ap) del estacionamiento.
+public class ServidorMaestroTCP extends AgenteBase {
     private final int puerto;
     private volatile boolean activo = true;
     private ServerSocket serverSocket;
 
-    public AgentePisoRemoto(String id, int puerto, GestorRecursos recursos, ConfiguracionSimulador config) {
-        super(id, "PisoRemoto(TCP)", recursos, config);
+    public ServidorMaestroTCP(String id, int puerto, GestorRecursos recursos, ConfiguracionSimulador config) {
+        super(id, "Servidor Maestro", recursos, config);
         this.puerto = puerto;
     }
 
@@ -32,7 +34,7 @@ public class AgentePisoRemoto extends AgenteBase {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error en AgentePisoRemoto: " + e.getMessage());
+            System.err.println("Error en ServidorMaestroTCP: " + e.getMessage());
         } finally {
             estadoActual = EstadoBPMN.FINALIZADO;
         }

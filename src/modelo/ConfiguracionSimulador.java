@@ -37,7 +37,7 @@ public class ConfiguracionSimulador {
     public int timerConoGuardia = 2000;
     public int timerCruce = 500;
 
-    // Red TCP (Agente Distribuido)
-    public String hostPisoRemoto = "127.0.0.1";
-    public int puertoPisoRemoto = 5050;
+    // Red TCP (Comportamiento Distribuido)
+    public String hostMaestro = "127.0.0.1";
+    public int puertoMaestro = 5050;
 }

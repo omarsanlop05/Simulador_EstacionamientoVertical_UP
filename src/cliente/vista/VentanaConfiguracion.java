@@ -1,4 +1,4 @@
-package vista;
+package cliente.vista;
 
 import modelo.ConfiguracionSimulador;
 import javax.swing.*;

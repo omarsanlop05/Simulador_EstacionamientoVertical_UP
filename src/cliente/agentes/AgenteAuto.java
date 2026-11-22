@@ -1,7 +1,7 @@
-package agentes;
+package cliente.agentes;
 
+import cliente.ClienteMaestroTCP;
 import modelo.*;
-import red.ClienteMaestroTCP;
 
 public class AgenteAuto extends AgenteBase {
     private final ClienteMaestroTCP clienteTCP;

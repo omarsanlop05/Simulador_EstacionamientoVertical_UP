@@ -1,8 +1,4 @@
-package agentes;
-
-import modelo.ConfiguracionSimulador;
-import modelo.EstadoBPMN;
-import modelo.GestorRecursos;
+package modelo;
 
 public abstract class AgenteBase implements Runnable {
     protected final String id;

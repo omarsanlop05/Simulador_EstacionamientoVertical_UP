@@ -1,4 +1,4 @@
-package agentes;
+package cliente.agentes;
 
 import modelo.*;
 

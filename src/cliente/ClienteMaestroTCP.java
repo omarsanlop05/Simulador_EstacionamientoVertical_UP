@@ -1,4 +1,4 @@
-package red;
+package cliente;
 
 import java.io.*;
 import java.net.Socket;
