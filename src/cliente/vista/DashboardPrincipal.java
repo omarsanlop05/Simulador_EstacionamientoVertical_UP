@@ -32,7 +32,7 @@ public class DashboardPrincipal extends JFrame {
         this.clienteTCP = new ClienteMaestroTCP(cfg.hostMaestro, cfg.puertoMaestro);
 
         setTitle("Tablero del Piso - Simulador Estacionamiento Vertical UP");
-        setSize(1100, 720);
+        setSize(1680, 720);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));

@@ -17,7 +17,7 @@ public class VentanaConfiguracion extends JFrame {
 
     public VentanaConfiguracion(ConfiguracionSimulador cfg) {
         this.cfg = cfg;
-        setTitle("Configuración Piso - Estacionamiento Vertical UP - Avance 3");
+        setTitle("b) Configuración Piso - Estacionamiento Vertical UP");
         setSize(680, 560);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
