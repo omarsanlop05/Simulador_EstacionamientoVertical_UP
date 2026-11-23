@@ -28,7 +28,14 @@ public enum EstadoBPMN {
     ELIGIENDO_PISO("Eligiendo piso / tomando cono (Cn)"),
     COLOCANDO_CONO("Colocando cono en cubículo (Cu)"),
     MANTENIENDO_CONO("Manteniendo cubículo bloqueado"),
-    RETIRANDO_CONO("Retirando cono");
+    RETIRANDO_CONO("Retirando cono"),
+
+    // Estados Ciclista
+    CRUZANDO_COMO_PEATON("Cruzando como peatón (Xp) - bicicleta"),
+    CRUZANDO_COMO_VEHICULO("Cruzando como vehículo (Xv) - bicicleta"),
+    ESTACIONANDO_BICI("Estacionando bicicleta (Cb)"),
+    BICICLETA_ESTACIONADA("Bicicleta estacionada (Cb)"),
+    SALIENDO_BICI("Retirando bicicleta (Cb')");
 
     private final String descripcion;
 

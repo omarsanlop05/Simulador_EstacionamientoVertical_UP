@@ -119,6 +119,11 @@ public class DashboardPrincipal extends JFrame {
         for (int i = 1; i <= cfg.numGuardias; i++) {
             registrarYArrancar(new AgenteGuardia("Guardia-" + i, recursos, cfg, clienteTCP));
         }
+
+        // 5. Iniciar Agentes Ciclista (usan Cb y cruzan de forma adaptativa)
+        for (int i = 1; i <= cfg.numCiclistas; i++) {
+            registrarYArrancar(new AgenteCiclista("Ciclista-" + i, recursos, cfg, clienteTCP));
+        }
     }
 
     private void registrarYArrancar(AgenteBase agente) {

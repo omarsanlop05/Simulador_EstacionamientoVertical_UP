@@ -74,6 +74,36 @@ public class CrucePeatonalMonitor {
         }
     }
 
+    // Intento sin bloqueo (para el ciclista): entra como peatón solo si
+    // en este instante la vía peatonal está abierta.
+    public boolean intentarEntrarPeaton() {
+        lock.lock();
+        try {
+            if (autoCruzando || peatonesCruzando >= pMax) {
+                return false;
+            }
+            peatonesCruzando++;
+            return true;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    // Intento sin bloqueo (para el ciclista): entra como vehículo solo si
+    // en este instante no hay peatones cruzando.
+    public boolean intentarEntrarAuto() {
+        lock.lock();
+        try {
+            if (autoCruzando || peatonesCruzando > 0) {
+                return false;
+            }
+            autoCruzando = true;
+            return true;
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public int getPeatonesCruzando() { return peatonesCruzando; }
     public int getAutosCruzando() { return autoCruzando ? 1 : 0; }
     public int getEsperandoTotal() { return peatonesEsperando + autosEsperando; }
