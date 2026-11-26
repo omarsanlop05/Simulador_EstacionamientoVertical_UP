@@ -37,42 +37,60 @@ public class VentanaConfiguracion extends JFrame {
 
         spCu = crearSpinner(cfg.mCubiculosAuto, 1, ConfiguracionSimulador.MAX_CUBICULOS_AUTO_PISO);
         spCb = crearSpinner(cfg.mCubiculosBici, 1, ConfiguracionSimulador.MAX_CUBICULOS_BICI_PISO);
-        spQ  = crearSpinner(cfg.mCallePiso, 1, ConfiguracionSimulador.MAX_CALLE_PISO);
-        spX  = crearSpinner(cfg.mCrucePeatonal, 1, ConfiguracionSimulador.MAX_CRUCE_PEATONAL);
+        spQ = crearSpinner(cfg.mCallePiso, 1, ConfiguracionSimulador.MAX_CALLE_PISO);
+        spX = crearSpinner(cfg.mCrucePeatonal, 1, ConfiguracionSimulador.MAX_CRUCE_PEATONAL);
         spEw = crearSpinner(cfg.mEsperaElevador, 1, ConfiguracionSimulador.MAX_ESPERA_ELEVADOR);
         spEc = crearSpinner(cfg.mCabinaElevador, 1, ConfiguracionSimulador.MAX_CABINA_ELEVADOR);
         spCn = crearSpinner(cfg.mConos, 1, ConfiguracionSimulador.MAX_CONOS);
 
-        pBuffers.add(new JLabel("Autos (m de " + ConfiguracionSimulador.MAX_AUTOS + "):")); pBuffers.add(spAutos);
-        pBuffers.add(new JLabel("Peatones (m de " + ConfiguracionSimulador.MAX_PEATONES + "):")); pBuffers.add(spPeatones);
-        pBuffers.add(new JLabel("Ciclistas (m de " + ConfiguracionSimulador.MAX_CICLISTAS + "):")); pBuffers.add(spCiclistas);
-        pBuffers.add(new JLabel("Guardias (m de " + ConfiguracionSimulador.MAX_GUARDIAS + "):")); pBuffers.add(spGuardias);
-        pBuffers.add(new JLabel("Caseta Cv / Cs / Cp (Buffer 1):")); pBuffers.add(new JLabel("1 de 1 (Fijo)"));
-        pBuffers.add(new JLabel("Cubículos Auto Cu (m de " + ConfiguracionSimulador.MAX_CUBICULOS_AUTO_PISO + "):")); pBuffers.add(spCu);
-        pBuffers.add(new JLabel("Cubículos Bici Cb (m de " + ConfiguracionSimulador.MAX_CUBICULOS_BICI_PISO + "):")); pBuffers.add(spCb);
-        pBuffers.add(new JLabel("Calle Piso Q (m de " + ConfiguracionSimulador.MAX_CALLE_PISO + "):")); pBuffers.add(spQ);
-        pBuffers.add(new JLabel("Cruce Peatonal Xp (m de " + ConfiguracionSimulador.MAX_CRUCE_PEATONAL + "):")); pBuffers.add(spX);
-        pBuffers.add(new JLabel("Espera Elevador Ew (m de " + ConfiguracionSimulador.MAX_ESPERA_ELEVADOR + "):")); pBuffers.add(spEw);
-        pBuffers.add(new JLabel("Cabina Elevador Ec (m de " + ConfiguracionSimulador.MAX_CABINA_ELEVADOR + "):")); pBuffers.add(spEc);
-        pBuffers.add(new JLabel("Conos Guardia Cn (m de " + ConfiguracionSimulador.MAX_CONOS + "):")); pBuffers.add(spCn);
+        pBuffers.add(new JLabel("Autos (m de " + ConfiguracionSimulador.MAX_AUTOS + "):"));
+        pBuffers.add(spAutos);
+        pBuffers.add(new JLabel("Peatones (m de " + ConfiguracionSimulador.MAX_PEATONES + "):"));
+        pBuffers.add(spPeatones);
+        pBuffers.add(new JLabel("Ciclistas (m de " + ConfiguracionSimulador.MAX_CICLISTAS + "):"));
+        pBuffers.add(spCiclistas);
+        pBuffers.add(new JLabel("Guardias (m de " + ConfiguracionSimulador.MAX_GUARDIAS + "):"));
+        pBuffers.add(spGuardias);
+        pBuffers.add(new JLabel("Caseta Cv / Cs / Cp (Buffer 1):"));
+        pBuffers.add(new JLabel("1 de 1 (Fijo)"));
+        pBuffers.add(new JLabel("Cubículos Auto Cu (m de " + ConfiguracionSimulador.MAX_CUBICULOS_AUTO_PISO + "):"));
+        pBuffers.add(spCu);
+        pBuffers.add(new JLabel("Cubículos Bici Cb (m de " + ConfiguracionSimulador.MAX_CUBICULOS_BICI_PISO + "):"));
+        pBuffers.add(spCb);
+        pBuffers.add(new JLabel("Calle Piso Q (m de " + ConfiguracionSimulador.MAX_CALLE_PISO + "):"));
+        pBuffers.add(spQ);
+        pBuffers.add(new JLabel("Cruce Peatonal Xp (m de " + ConfiguracionSimulador.MAX_CRUCE_PEATONAL + "):"));
+        pBuffers.add(spX);
+        pBuffers.add(new JLabel("Espera Elevador Ew (m de " + ConfiguracionSimulador.MAX_ESPERA_ELEVADOR + "):"));
+        pBuffers.add(spEw);
+        pBuffers.add(new JLabel("Cabina Elevador Ec (m de " + ConfiguracionSimulador.MAX_CABINA_ELEVADOR + "):"));
+        pBuffers.add(spEc);
+        pBuffers.add(new JLabel("Conos Guardia Cn (m de " + ConfiguracionSimulador.MAX_CONOS + "):"));
+        pBuffers.add(spCn);
 
         // Panel Derecho: Timers
         JPanel pTimers = new JPanel(new GridLayout(7, 2, 5, 8));
         pTimers.setBorder(BorderFactory.createTitledBorder("Timers de Simulación (ms)"));
 
         spTCaseta = crearSpinner(cfg.timerCaseta, 100, 10000);
-        spTCirc   = crearSpinner(cfg.timerCirculacion, 100, 10000);
-        spTEstac  = crearSpinner(cfg.timerEstacionar, 100, 10000);
-        spTUniv   = crearSpinner(cfg.timerEstanciaUniversidad, 500, 20000);
-        spTCono   = crearSpinner(cfg.timerConoGuardia, 200, 15000);
-        spTCruce  = crearSpinner(cfg.timerCruce, 100, 10000);
+        spTCirc = crearSpinner(cfg.timerCirculacion, 100, 10000);
+        spTEstac = crearSpinner(cfg.timerEstacionar, 100, 10000);
+        spTUniv = crearSpinner(cfg.timerEstanciaUniversidad, 500, 20000);
+        spTCono = crearSpinner(cfg.timerConoGuardia, 200, 15000);
+        spTCruce = crearSpinner(cfg.timerCruce, 100, 10000);
 
-        pTimers.add(new JLabel("Timer Caseta (ms):")); pTimers.add(spTCaseta);
-        pTimers.add(new JLabel("Timer Circulación (ms):")); pTimers.add(spTCirc);
-        pTimers.add(new JLabel("Timer Estacionar (ms):")); pTimers.add(spTEstac);
-        pTimers.add(new JLabel("Timer Estancia Univ (ms):")); pTimers.add(spTUniv);
-        pTimers.add(new JLabel("Timer Cono Guardia (ms):")); pTimers.add(spTCono);
-        pTimers.add(new JLabel("Timer Cruce Peatonal (ms):")); pTimers.add(spTCruce);
+        pTimers.add(new JLabel("Timer Caseta (ms):"));
+        pTimers.add(spTCaseta);
+        pTimers.add(new JLabel("Timer Circulación (ms):"));
+        pTimers.add(spTCirc);
+        pTimers.add(new JLabel("Timer Estacionar (ms):"));
+        pTimers.add(spTEstac);
+        pTimers.add(new JLabel("Timer Estancia Univ (ms):"));
+        pTimers.add(spTUniv);
+        pTimers.add(new JLabel("Timer Cono Guardia (ms):"));
+        pTimers.add(spTCono);
+        pTimers.add(new JLabel("Timer Cruce Peatonal (ms):"));
+        pTimers.add(spTCruce);
 
         panelCentro.add(pBuffers);
         panelCentro.add(pTimers);
@@ -116,8 +134,10 @@ public class VentanaConfiguracion extends JFrame {
     // Punto de entrada del cliente (un piso). Uso: [hostMaestro] [puertoMaestro]
     public static void main(String[] args) {
         ConfiguracionSimulador cfg = new ConfiguracionSimulador();
-        if (args.length >= 1) cfg.hostMaestro = args[0];
-        if (args.length >= 2) cfg.puertoMaestro = Integer.parseInt(args[1]);
+        if (args.length < 2)
+            throw new IllegalArgumentException("usage: java src/cliente/vista/VentanaConfiguracion.java <host> <port>");
+        cfg.hostMaestro = args[0];
+        cfg.puertoMaestro = Integer.parseInt(args[1]);
         SwingUtilities.invokeLater(() -> new VentanaConfiguracion(cfg).setVisible(true));
     }
 }
